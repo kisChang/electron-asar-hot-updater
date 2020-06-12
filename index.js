@@ -223,13 +223,13 @@ var Updater = {
           if (error) {
             return console.error('err')
           }
-          var updateFile = this.getUpdateFile();
+          var updateFile = path.join(app.getPath('userData'), UPDATE_FILE);
           var contentType = response.headers['content-type']
           if (contentType && contentType.indexOf('zip') > -1) {
             Updater.log('ZipFilePath: ' + AppPathFolder)
             try {
               const zip = new admZip(body)
-              zip.extractAllTo(AppPathFolder, true)
+              zip.extractAllTo(path.join(app.getPath('userData')), true)
               // Store the update file path
               Updater.update.file = updateFile
               Updater.log('Updater.update.file: ' + updateFile)
@@ -336,10 +336,6 @@ var Updater = {
       })
   },
 
-  getUpdateFile: function(){
-    return path.join(app.getPath('userData'), UPDATE_FILE);
-  },
-
   progress: function (callback) {
     if (callback) {
       this.setup.progresscallback = callback
@@ -386,7 +382,7 @@ var Updater = {
   // way of replacing it. This should get called after the main Electron
   // process has quit. Win32 calls 'move' and other platforms call 'mv'
   mvOrMove: function (child) {
-    var updateAsar = this.getUpdateFile();
+    var updateAsar = path.join(app.getPath('userData'), UPDATE_FILE);
     var appAsar = AppPathFolder + 'app.asar'
     var winArgs = ''
 
